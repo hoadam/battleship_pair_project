@@ -5,22 +5,22 @@ RSpec.describe Cell do
   let(:cruiser) { Ship.new("Cruiser", 3) }
   describe '#initialize' do
     it 'can initialize' do
-      expect(cell.coordinate).to eq("B4")
-      expect(cell.ship).to be_nil
+      expect(cell_1.coordinate).to eq("B4")
+      expect(cell_1.ship).to be_nil
     end
   end
 
   describe '#empty?' do
     it 'returns true if the cell has no ship' do
-      expect(cell.empty?).to eq(true)
+      expect(cell_1.empty?).to eq(true)
     end
   end
 
   describe '#place_ship' do
     it 'places ship on the cells' do
-      cell.place_ship(cruiser)
-      expect(cell.ship).to eq(cruiser)
-      expect(cell.empty?).to eq(false)
+      cell_1.place_ship(cruiser)
+      expect(cell_1.ship).to eq(cruiser)
+      expect(cell_1.empty?).to eq(false)
     end
   end
 end
