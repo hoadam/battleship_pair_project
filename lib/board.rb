@@ -49,4 +49,13 @@ class Board
     last_row = rows[0]+ (length-1)
     same_column?(columns) && rows == (rows[0]..last_row).to_a
   end
+
+  def place(ship, coordinates)
+    if valid_placement?(ship, coordinates)
+       coordinates.each do |coordinate|
+        cells[coordinate].place_ship(ship)
+       end
+    end
+  end
+  
 end
