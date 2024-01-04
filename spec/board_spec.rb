@@ -49,7 +49,7 @@ RSpec.describe Board do
         end
     end
 
-    describe 'placing ship' do
+    describe 'place' do
         it 'places ship on cells in a board' do
             board.place(cruiser, ["A1","A2","A3"])
             cell_1 = board.cells["A1"]   
@@ -63,6 +63,14 @@ RSpec.describe Board do
         it 'ships cannot overlap' do
             board.place(cruiser, ["A1","A2","A3"])
             expect(board.valid_placement?(submarine, ["A1", "B1"])).to eq(false)
+        end
+    end
+
+    describe 'render' do
+        it 'render a string of representation of the board' do
+            board.place(cruiser, ["A1","A2","A3"])
+            expect(board.render).to eq("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n")
+            expect(board.render(true)).to eq("  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n")
         end
     end
 end
