@@ -25,7 +25,7 @@ class Board
 
   def valid_placement?(ship, coordinates)
     return false if coordinates.length != ship.length
-
+    return false if !overlapping_ship?(coordinates)
     columns = coordinates.map {|coordinate| coordinate[0]}
     rows = coordinates.map {|coordinate| coordinate[1].to_i}
     return true if consecutive_columns?(columns,rows,ship.length) || consecutive_rows?(columns, rows,ship.length)
@@ -49,5 +49,19 @@ class Board
   def consecutive_rows?(columns, rows,length)
     last_row = rows[0]+ (length-1)
     same_column?(columns) && rows == (rows[0]..last_row).to_a
+  end
+
+  def place(ship, coordinates)
+    if valid_placement?(ship, coordinates)
+       coordinates.each do |coordinate|
+        cells[coordinate].place_ship(ship)
+       end
+    end
+  end
+
+  def overlapping_ship?(coordinates)
+    coordinates.all? do |coordinate|
+    cells.key?(coordinate) && cells[coordinate].empty?
+    end
   end
 end
