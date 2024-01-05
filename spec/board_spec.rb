@@ -2,8 +2,8 @@ require './spec/spec_helper'
 
 RSpec.describe Board do
     let(:board) { Board.new }
-    let(:cruiser) {Ship.new("Cruiser", 3)}
-    let(:submarine) {Ship.new("Submarine", 2)}
+    let(:cruiser) { Ship.new("Cruiser", 3)}
+    let(:submarine) { Ship.new("Submarine", 2)}
     describe '#initialize' do
         it 'can initialize' do
             expect(board).to be_a(Board)
@@ -49,7 +49,7 @@ RSpec.describe Board do
         end
     end
 
-    describe 'place' do
+    describe '#place' do
         it 'places ship on cells in a board' do
             board.place(cruiser, ["A1","A2","A3"])
             cell_1 = board.cells["A1"]
@@ -60,6 +60,7 @@ RSpec.describe Board do
             expect(cell_3.ship).to eq(cruiser)
             expect(cell_3.ship).to eq(cell_2.ship)
         end
+
         it 'ships cannot overlap' do
             board.place(cruiser, ["A1","A2","A3"])
             expect(board.valid_placement?(submarine, ["A1", "B1"])).to eq(false)

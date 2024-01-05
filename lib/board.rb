@@ -25,11 +25,12 @@ class Board
 
   def valid_placement?(ship, coordinates)
     return false if coordinates.length != ship.length
-    return false if !coordinates_available?(coordinates)
 
     columns = coordinates.map {|coordinate| coordinate[0]}
     rows = coordinates.map {|coordinate| coordinate[1].to_i}
-    return true if consecutive_columns?(columns,rows,ship.length) || consecutive_rows?(columns, rows,ship.length)
+    return true if coordinates_available?(coordinates) &&
+    (consecutive_columns?(columns,rows,ship.length) ||
+     consecutive_rows?(columns, rows,ship.length))
 
     false
   end
