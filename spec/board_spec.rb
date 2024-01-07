@@ -7,10 +7,14 @@ RSpec.describe Board do
     describe '#initialize' do
         it 'can initialize' do
             expect(board).to be_a(Board)
-            expect(board.cells.length).to eq(16)
         end
     end
 
+    describe '#create_cells' do
+        it 'create a board of cells' do
+            expect(board.create_cells(4,4).count).to eq(16)
+        end
+    end
     describe '#valid_coordinate?(coordinate)' do
         it 'returns true if coordinate valid' do
             expect(board.valid_coordinate?("A1")).to eq(true)
@@ -42,10 +46,47 @@ RSpec.describe Board do
         end
 
         it 'returns true if all conditions above are met ' do
-
             expect(board.valid_placement?(submarine, ["A1", "A2"])).to eq(true)
             expect(board.valid_placement?(cruiser, ["B1", "C1", "D1"])).to eq(true)
 
+        end
+    end
+
+    describe "#same_row?" do
+        it 'returns true if the coordinates are on the same row' do
+            rows = [1,1,1]
+            expect(board.same_row?(rows)).to eq(true)
+        end
+    end
+
+    describe "#same_column?" do
+        it 'returns true if the coordinates are on the same columns' do
+            columns = ["A","A", "A"]
+            expect(board.same_column?(columns)).to eq(true)
+        end
+    end
+
+    describe "#consecutive_columns?" do
+        it 'returns true if the horizontal coordinates are consecutive' do
+            length = 3
+            rows = [1,1,1]
+            columns = ["A","B","C"]
+            expect(board.consecutive_columns?(columns,rows,length)).to eq(true)
+        end
+    end
+
+    describe "#consecutive_rows?" do
+        it 'returns true if the vertical coordinates are consecutive' do
+            length = 3
+            rows = [1,2,3]
+            columns = ["A","A","A"]
+            expect(board.consecutive_rows?(columns,rows,length)).to eq(true)
+        end
+    end
+
+    describe "#consecutive?" do
+        it 'returns true if the coordinates are consecutive' do
+            expect(board.consecutive?(cruiser, ["A1","A2","A3"])).to eq(true)
         end
     end
 
@@ -69,9 +110,10 @@ RSpec.describe Board do
 
     describe 'render' do
         it 'render a string of representation of the board' do
-            board.place(cruiser, ["A1","A2","A3"])
-            expect(board.render).to eq("  A B C D \n1 . . . . \n2 . . . . \n3 . . . . \n4 . . . . \n")
-            expect(board.render(true)).to eq("  A B C D \n1 S . . . \n2 S . . . \n3 S . . . \n4 . . . . \n")
+            board_1 = Board.new(5, 5)
+            board_1.place(cruiser, ["A3","A4","A5"])
+            expect(board_1.render).to eq("  A B C D E \n1 . . . . . \n2 . . . . . \n3 . . . . . \n4 . . . . . \n5 . . . . . \n")
+            expect(board_1.render(true)).to eq("  A B C D E \n1 . . . . . \n2 . . . . . \n3 S . . . . \n4 S . . . . \n5 S . . . . \n")
         end
     end
 end
