@@ -110,8 +110,9 @@ class Game
      end
 
     def computer_random_shot
-        columns = ("A".."D").to_a
-        rows = (1..4).to_a
+
+        columns = ("A"..("A".ord + @columns - 1).chr).to_a
+        rows = (1..@rows).to_a
         loop do
             start_column = columns.sample
             start_row = rows.sample
