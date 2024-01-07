@@ -1,14 +1,20 @@
 class Board
   attr_reader :cells
 
-  def initialize
-    @cells = create_cells
+  def initialize(columns =4,rows =4)
+    @cells = create_cells(columns,rows)
+    @columns = columns
+    @rows = rows
   end
 
-  def create_cells
+  def create_cells(columns,rows)
     cells = {}
-    columns = ["A","B","C","D"]
-    rows = [1, 2, 3, 4]
+    # columns = ["A","B","C","D"]
+    # rows = [1, 2, 3, 4]
+
+    columns = ("A"..("A".ord + columns - 1).chr).to_a
+    rows = (1..rows).to_a
+
     columns.each do |letter|
       rows.each do |number|
         coordinate = "#{letter}#{number}"
@@ -25,13 +31,17 @@ class Board
 
   def valid_placement?(ship, coordinates)
     return false if coordinates.length != ship.length
-    return false if !coordinates_available?(coordinates)
-
-    columns = coordinates.map {|coordinate| coordinate[0]}
-    rows = coordinates.map {|coordinate| coordinate[1].to_i}
-    return true if consecutive_columns?(columns,rows,ship.length) || consecutive_rows?(columns, rows,ship.length)
+    return true if coordinates_available?(coordinates) && consecutive?(ship, coordinates)
 
     false
+  end
+
+  def consecutive?(ship, coordinates)
+    columns = coordinates.map {|coordinate| coordinate[0]}
+    rows = coordinates.map {|coordinate| coordinate[1].to_i}
+
+    return true if consecutive_columns?(columns,rows,ship.length) ||
+    consecutive_rows?(columns, rows,ship.length)
   end
 
   def same_row?(rows)
@@ -67,10 +77,11 @@ class Board
   end
 
   def render(reveal_ship = false)
-    board_header = "  A B C D \n"
+    # binding.pry
+    board_header = "  " + ("A"..("A".ord + @columns - 1).chr).to_a.join(" ") + " \n"
 
-    board = ("1".."4").map do |row|
-      rendered_column = ("A".."D").map do |column|
+    board = (1..@rows).map do |row|
+      rendered_column = ("A"..("A".ord + @columns - 1).chr).map do |column|
         coordinate = "#{column}#{row}"
         cells[coordinate].render(reveal_ship)
       end
