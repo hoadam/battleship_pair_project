@@ -57,12 +57,22 @@ RSpec.describe Board do
             rows = [1,1,1]
             expect(board.same_row?(rows)).to eq(true)
         end
+
+        it 'returns false if the coordinates are not on the same row' do
+            rows = [1,2,1]
+            expect(board.same_row?(rows)).to eq(false)
+        end
     end
 
     describe "#same_column?" do
-        it 'returns true if the coordinates are on the same columns' do
+        it 'returns true if the coordinates are on the same column' do
             columns = ["A","A", "A"]
             expect(board.same_column?(columns)).to eq(true)
+        end
+
+        it 'returns false if the coordinates are not on the same column' do
+            columns = ["A","B","B"]
+            expect(board.same_row?(columns)).to eq(false)
         end
     end
 
@@ -73,6 +83,13 @@ RSpec.describe Board do
             columns = ["A","B","C"]
             expect(board.consecutive_columns?(columns,rows,length)).to eq(true)
         end
+
+        it 'returns false if the horizontal coordinates are not consecutive' do
+            length = 3
+            rows = [1,1,1]
+            columns = ["A","C","D"]
+            expect(board.consecutive_columns?(columns,rows,length)).to eq(false)
+        end
     end
 
     describe "#consecutive_rows?" do
@@ -82,7 +99,16 @@ RSpec.describe Board do
             columns = ["A","A","A"]
             expect(board.consecutive_rows?(columns,rows,length)).to eq(true)
         end
+
+        it 'returns false if the vertical coordinates are not consecutive' do
+            length = 3
+            rows = [1,3,4]
+            columns = ["A","A","A"]
+            expect(board.consecutive_rows?(columns,rows,length)).to eq(false)
+        end
     end
+
+
 
     describe "#consecutive?" do
         it 'returns true if the coordinates are consecutive' do
