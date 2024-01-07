@@ -4,6 +4,7 @@ require './lib/board'
 
 class Game
     attr_reader :board, :ship
+    attr_accessor :rows, :columns
 
     def initialize
         @rows = nil
@@ -110,7 +111,6 @@ class Game
      end
 
     def computer_random_shot
-
         columns = ("A"..("A".ord + @columns - 1).chr).to_a
         rows = (1..@rows).to_a
         loop do
@@ -157,8 +157,8 @@ class Game
     end
 
     def generate_random_coordinates(length)
-        columns = ("A".."D").to_a
-        rows = (1..4).to_a
+        columns = ("A"..("A".ord + @columns - 1).chr).to_a
+        rows = (1..@rows).to_a
         start_column = columns.sample
         start_row = rows.sample
         orientation = ["horizontal","vertical"].sample
