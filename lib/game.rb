@@ -1,28 +1,34 @@
-require './spec/spec_helper'
+require './lib/ship'
+require './lib/cell'
+require './lib/board'
+
 class Game
     attr_reader :board, :ship
 
     def initialize
-        @board_player = Board.new
-        @board_computer = Board.new
+        @rows = nil
+        @columns = nil
+        @board_player = nil
+        @board_computer = nil
         @player_ships = [Ship.new("Cruiser", 3), Ship.new("Submarine",2)]
         @computer_ships = [Ship.new("Cruiser", 3), Ship.new("Submarine",2)]
     end
 
     def start
-        loop do
-            puts "Welcome to BATTLESHIP"
-            puts "Enter p to play. Enter q to quit."
+        catch(:finish) do
+            loop do
+                puts "Welcome to BATTLESHIP"
+                puts "Enter p to play. Enter q to quit."
 
-            player_answer = gets.chomp.downcase
+                player_answer = gets.chomp.downcase
 
-            if player_answer == "p"
-                play
-            elsif player_answer == "q"
-                break
+                if player_answer == "p"
+                    play
+                elsif player_answer == "q"
+                    return
+                end
             end
         end
-
     end
 
     def play
@@ -31,18 +37,24 @@ class Game
     end
 
     def setup
-        place_ships_randomly
+        create_board
+        computer_place_ships
         puts "I have laid out my ships on the grid."
         puts "You now need to lay out your two ships."
         puts "The Cruiser is three units long and the Submarine is two units long."
         puts @board_player.render
+        player_place_ships
+    end
 
-        puts "Enter the squares for the Cruiser (3 spaces):"
-        player_place_ships(@player_ships.first)
-        puts "Enter the squares for the Submarine (2 spaces):"
-        player_place_ships(@player_ships.last)
-        puts @board_player.render
-
+    def create_board
+        puts "Enter the number of rows for the board:"
+        rows = gets.chomp.to_i
+        puts "Enter the number of columns for the board:"
+        columns = gets.chomp.to_i
+        @rows = rows
+        @columns = columns
+        @board_player = Board.new(columns,rows)
+        @board_computer = Board.new(columns,rows)
     end
 
     def turn
@@ -51,6 +63,13 @@ class Game
         puts "==========PLAYER BOARD=========="
         puts @board_player.render(true)
         shot_start
+        puts "Do you want to play again? Y or N"
+        player_answer = gets.chomp.downcase
+        if  player_answer == "y"
+            start
+        elsif player_answer == 'n'
+            throw :finish
+        end
     end
 
     def shot_start
@@ -72,7 +91,7 @@ class Game
     def player_shot
         puts "Enter the coordinate for your shot:"
         loop do
-            coordinate = gets.chomp
+            coordinate = gets.chomp.upcase
 
             if @board_computer.valid_coordinate?(coordinate)
                 if !@board_computer.cells[coordinate].fired_upon?
@@ -100,7 +119,7 @@ class Game
 
             if @board_player.valid_coordinate?(coordinate) && !@board_player.cells[coordinate].fired_upon?
                 @board_player.cells[coordinate].fire_upon
-                #binding.pry
+
                 shot_result = @board_player.cells[coordinate].render
                 puts "My shot on #{coordinate} was a #{shot_result}."
                 puts @board_player.render
@@ -109,20 +128,24 @@ class Game
         end
      end
 
-    def player_place_ships(ship)
-        loop do
-            coordinates = gets.chomp.split(" ")
-            if @board_player.valid_placement?(ship, coordinates)
-                @board_player.place(ship, coordinates)
-                puts @board_player.render(true)
-                break
-            else
-                puts "Those are invalid coordinates. Please try again:"
+    def player_place_ships
+        @player_ships.each do |ship|
+            puts "Enter the squares for the #{ship.name} #{ship.length} spaces:"
+
+            loop do
+                coordinates = gets.chomp.upcase.split(" ")
+                if @board_player.valid_placement?(ship, coordinates)
+                    @board_player.place(ship, coordinates)
+                    puts @board_player.render(true)
+                    break
+                else
+                    puts "Those are invalid coordinates. Please try again:"
+                end
             end
         end
     end
 
-    def place_ships_randomly
+    def computer_place_ships
         @computer_ships.each do |ship|
             coordinates = generate_random_coordinates(ship.length)
             until @board_computer.valid_placement?(ship, coordinates) do
@@ -132,14 +155,13 @@ class Game
         end
     end
 
-
-
     def generate_random_coordinates(length)
         columns = ("A".."D").to_a
         rows = (1..4).to_a
         start_column = columns.sample
         start_row = rows.sample
         orientation = ["horizontal","vertical"].sample
+
         if orientation == "horizontal"
             end_column_index = columns.index(start_column) + length - 1
             end_column_index = columns.size - 1 if end_column_index >= columns.size
@@ -154,10 +176,4 @@ class Game
 
         coordinates
     end
-
-
-
-
 end
-# game = Game.new
-# game.start
