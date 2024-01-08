@@ -48,14 +48,25 @@ class Game
     end
 
     def create_board
-        puts "Enter the number of rows for the board:"
-        rows = gets.chomp.to_i
-        puts "Enter the number of columns for the board:"
-        columns = gets.chomp.to_i
-        @rows = rows
-        @columns = columns
-        @board_player = Board.new(columns,rows)
-        @board_computer = Board.new(columns,rows)
+        loop do
+            puts "Enter the number of rows for the board:"
+            rows = gets.chomp
+            puts "Enter the number of columns for the board:"
+            columns = gets.chomp
+            if valid_input?(rows) && valid_input?(columns)
+                @rows = rows.to_i
+                @columns = columns.to_i
+                @board_player = Board.new(@columns,@rows)
+                @board_computer = Board.new(@columns,@rows)
+                break
+            else
+                puts "Invalid input for the number of rows and columns!"
+            end
+        end
+    end
+
+    def valid_input?(input)
+        input.to_i.to_s == input
     end
 
     def turn
